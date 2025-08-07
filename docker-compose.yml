@@ -4,6 +4,7 @@ services:
   postgres:
     image: postgres:15
     restart: always
+    env_file: .env
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -12,6 +13,22 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file: .env
+    depends_on:
+      - postgres
+    command: sh -c "sleep 5 && npm run typeorm:migration:run && npm run start"
 
 volumes:
   pgdata:
