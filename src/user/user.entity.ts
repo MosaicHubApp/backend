@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import {VerificationSession} from "../auth/verification-session.entity";
 
 @Entity()
 export class User {
@@ -20,9 +21,9 @@ export class User {
     @Column({ default: false })
     is_verified: boolean;
 
-    @DeleteDateColumn()
-    deleted_at?: Date;
-
     @Column({length: 1000, default: ""})
     description: string;
+
+    @OneToMany(() => VerificationSession, (verificationSession) => verificationSession.user)
+    verification_sessions: [VerificationSession];
 }
