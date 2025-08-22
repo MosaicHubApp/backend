@@ -2,7 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, Ma
 import {User} from "../user/user.entity";
 
 @Entity()
-export class VerificationSession {
+export class EmailVerificationSession {
     @PrimaryGeneratedColumn()
     verification_session_id: number;
 

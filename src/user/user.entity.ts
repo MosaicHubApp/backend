@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
-import {VerificationSession} from "../auth/verification-session.entity";
+import {EmailVerificationSession} from "../auth/email-verification-session.entity";
 
 @Entity()
 export class User {
@@ -19,11 +19,11 @@ export class User {
     photo_url?: string;
 
     @Column({ default: false })
-    is_verified: boolean;
+    is_verified_student: boolean;
 
     @Column({length: 1000, default: ""})
     description: string;
 
-    @OneToMany(() => VerificationSession, (verificationSession) => verificationSession.user)
-    verification_sessions: [VerificationSession];
+    @OneToMany(() => EmailVerificationSession, (verificationSession) => verificationSession.user)
+    verification_sessions: [EmailVerificationSession];
 }

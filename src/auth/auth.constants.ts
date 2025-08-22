@@ -88,3 +88,5 @@ export const VERIFICATION_MAIL_HTML = `
 </body>
 </html>
 `;
+
+export const VERIFICATION_CODE_EXPIRATION_TIME_SECONDS = 600;

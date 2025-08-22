@@ -8,14 +8,15 @@ import { ConfigService } from '@nestjs/config';
 import {JWT_EXPIRATION_TIME} from "./auth.constants";
 import {EmailModule} from "../email/email.module";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {VerificationSession} from "./verification-session.entity";
+import {EmailVerificationSession} from "./email-verification-session.entity";
+import {JwtStrategy} from "./strategies/jwt.strategy";
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     EmailModule,
-    TypeOrmModule.forFeature([VerificationSession]),
+    TypeOrmModule.forFeature([EmailVerificationSession]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -24,7 +25,7 @@ import {VerificationSession} from "./verification-session.entity";
       }),
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
