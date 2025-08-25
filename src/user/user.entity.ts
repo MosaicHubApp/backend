@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 import {EmailVerificationSession} from "../auth/email-verification-session.entity";
+import {PasswordResetSession} from "../auth/password-reset-session.entity";
 
 @Entity()
 export class User {
@@ -26,4 +27,7 @@ export class User {
 
     @OneToMany(() => EmailVerificationSession, (verificationSession) => verificationSession.user)
     verification_sessions: [EmailVerificationSession];
+
+    @OneToMany(() => PasswordResetSession, (passwordChangeSession) => passwordChangeSession.user)
+    password_change_sessions: [PasswordResetSession];
 }

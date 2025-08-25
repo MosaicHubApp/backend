@@ -36,4 +36,8 @@ export class UserService {
     async updateEmail(userId: number, newEmail: string) {
         await this.userRepository.update({user_id: userId}, {email: newEmail, is_verified_student: false});
     }
+
+    async updatePassword(user_id: number, hashedPassword: string) {
+        await this.userRepository.update({user_id}, {password: hashedPassword});
+    }
 }

@@ -6,6 +6,8 @@ import {VerifyEmailDto} from "./dto/verify-email.dto";
 import {ApiBearerAuth} from "@nestjs/swagger";
 import {LoginDto} from "./dto/login.dto";
 import {ChangeEmailDto} from "./dto/change-email.dto";
+import {RequestPasswordResetDto} from "./dto/request-password-reset.dto";
+import {ConfirmPasswordResetDto} from "./dto/confirm-password-reset.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -40,5 +42,15 @@ export class AuthController {
     @Put('change-email')
     async changeEmail(@Request() req, @Body() dto: ChangeEmailDto) {
         return this.authService.changeEmail(req.user.userId, dto.email);
+    }
+
+    @Post('reset-password/request')
+    async requestPasswordReset(@Body() dto: RequestPasswordResetDto) {
+        return this.authService.requestPasswordReset(dto.email);
+    }
+
+    @Put('reset-password/confirm')
+    async confirmPasswordReset(@Body() dto: ConfirmPasswordResetDto) {
+        return this.authService.confirmPasswordReset(dto.password, dto.token);
     }
 }

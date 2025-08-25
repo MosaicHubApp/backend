@@ -10,13 +10,14 @@ import {EmailModule} from "../email/email.module";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {EmailVerificationSession} from "./email-verification-session.entity";
 import {JwtStrategy} from "./strategies/jwt.strategy";
+import {PasswordResetSession} from "./password-reset-session.entity";
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     EmailModule,
-    TypeOrmModule.forFeature([EmailVerificationSession]),
+    TypeOrmModule.forFeature([EmailVerificationSession, PasswordResetSession]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
