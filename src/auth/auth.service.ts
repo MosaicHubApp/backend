@@ -94,10 +94,10 @@ export class AuthService {
         return this.generateToken(user);
     }
 
-    private createVerificationSession(user_id: number, verification_code: string) {
+    private createVerificationSession(userId: number, verificationCode: string) {
         return this.verificationSessionRepository.save({
-            user: {user_id},
-            verification_code,
+            user: {user_id: userId},
+            verification_code: verificationCode,
             is_verified: false
         });
     }
@@ -138,7 +138,7 @@ export class AuthService {
             throw new BadRequestException('User not found');
         }
         const verificationSession = await this.verificationSessionRepository.findOne({
-            where: {user: {user_id: userId}, is_verified: false},
+            where: {user, is_verified: false},
         })
         if (!verificationSession) {
             throw new BadRequestException('Email already verified');
