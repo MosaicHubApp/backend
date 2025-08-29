@@ -1,6 +1,14 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import {EmailVerificationSession} from "../auth/email-verification-session.entity";
 import {PasswordResetSession} from "../auth/password-reset-session.entity";
+import { Interest } from './interest.entity';
 
 @Entity()
 export class User {
@@ -30,4 +38,8 @@ export class User {
 
     @OneToMany(() => PasswordResetSession, (passwordChangeSession) => passwordChangeSession.user)
     password_change_sessions: [PasswordResetSession];
+
+    @ManyToMany(() => Interest, (interest) => interest.users)
+    @JoinTable()
+    interests: Interest[];
 }
