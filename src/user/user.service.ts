@@ -11,6 +11,7 @@ import { IdNameDto } from './dto/id-name.dto';
 import { MIN_INTERESTS_COUNT } from './user.constants';
 import { UserProfileDto } from './dto/user-profile.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
+import { BannedUser } from './banned-user.entity';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,8 @@ export class UserService {
     private interestCategoryRepository: Repository<InterestCategory>,
     @InjectRepository(InterestSubcategory)
     private interestSubcategoryRepository: Repository<InterestSubcategory>,
+    @InjectRepository(BannedUser)
+    private bannedUserRepository: Repository<BannedUser>,
   ) {}
 
   findByEmail(email: string) {
@@ -97,15 +100,21 @@ export class UserService {
   async getProfile(userId: number): Promise<UserProfileDto> {
     const user = await this.userRepository.findOne({
       where: { user_id: userId },
-      relations: ["interests"],
+      relations: ['interests'],
     });
     if (!user) {
       throw new BadRequestException();
     }
+    return this.mapUserToProfileDto(user);
+  }
+
+  private mapUserToProfileDto(user: User): UserProfileDto {
     return {
-      id: userId,
+      id: user.user_id,
       name: user.name,
-      interests: user.interests.map((i) => new IdNameDto(i.interest_id, i.name)),
+      interests: user.interests ? user.interests.map(
+        (i) => new IdNameDto(i.interest_id, i.name),
+      ) : undefined,
       description: user.description,
       photoUrl: user.photo_url,
       isVerifiedStudent: user.is_verified_student,
@@ -142,4 +151,55 @@ export class UserService {
     return { message: 'Avatar updated successfully', photoUrl: user.photo_url };
   }
 
+  async banUser(userId: number, userIdToBan: number) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const userToBan = await this.findById(userIdToBan);
+    if (!userToBan) {
+      throw new BadRequestException('User to ban not found');
+    }
+    if (userId == userIdToBan) {
+      throw new BadRequestException('You cannot ban yourself');
+    }
+    const bannedUser = await this.bannedUserRepository.findOne({
+      where: { banned_by_user: user, banned_user: userToBan },
+    });
+    if (bannedUser) {
+      throw new BadRequestException('User is already banned');
+    }
+    await this.bannedUserRepository.save({
+      banned_by_user: user,
+      banned_user: userToBan,
+    });
+  }
+
+  async unbanUser(userId: number, userIdToUnban: number) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const userToBan = await this.findById(userIdToUnban);
+    if (!userToBan) {
+      throw new BadRequestException('User to ban not found');
+    }
+    const bannedUser = await this.bannedUserRepository.findOne({
+      where: { banned_by_user: user, banned_user: userToBan },
+    });
+    if (!bannedUser) {
+      throw new BadRequestException('User is not banned');
+    }
+    await this.bannedUserRepository.remove(bannedUser);
+  }
+
+  async getBannedUsers(userId: number) {
+    const bannedUsers = await this.bannedUserRepository.find({
+      where: { banned_by_user: { user_id: userId } },
+      relations: ['banned_user'],
+    });
+    return bannedUsers
+      .map((bannedUser) => bannedUser.banned_user)
+      .map(this.mapUserToProfileDto);
+  }
 }

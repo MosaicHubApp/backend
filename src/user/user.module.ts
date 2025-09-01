@@ -6,9 +6,10 @@ import { Interest } from './interest.entity';
 import { InterestCategory } from './interest-category.entity';
 import { InterestSubcategory } from './interest-subcategory.entity';
 import { UserController } from './user.controller';
+import { BannedUser } from './banned-user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Interest, InterestCategory, InterestSubcategory])],
+  imports: [TypeOrmModule.forFeature([User, Interest, InterestCategory, InterestSubcategory, BannedUser])],
   providers: [UserService],
   exports: [UserService],
   controllers: [UserController],

@@ -9,6 +9,7 @@ import {
 import { EmailVerificationSession } from '../auth/email-verification-session.entity';
 import { PasswordResetSession } from '../auth/password-reset-session.entity';
 import { Interest } from './interest.entity';
+import { BannedUser } from './banned-user.entity';
 
 @Entity()
 export class User {
@@ -60,4 +61,16 @@ export class User {
   @ManyToMany(() => Interest, (interest) => interest.users)
   @JoinTable()
   interests: Interest[];
+
+  @OneToMany(
+    () => BannedUser,
+    (banned_user) => banned_user.banned_by_user,
+  )
+  banned_by_users: BannedUser[];
+
+  @OneToMany(
+    () => BannedUser,
+    (banned_user) => banned_user.banned_user,
+  )
+  banned_users: BannedUser[];
 }

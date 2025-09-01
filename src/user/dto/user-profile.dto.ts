@@ -3,7 +3,7 @@ import { IdNameDto } from './id-name.dto';
 export class UserProfileDto {
   id: number;
   name: string;
-  interests: IdNameDto[];
+  interests?: IdNameDto[];
   description: string;
   photoUrl?: string;
   isVerifiedStudent: boolean;

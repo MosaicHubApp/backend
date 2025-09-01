@@ -8,6 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
   Post,
+  Param, Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -78,5 +79,20 @@ export class UserController {
   })
   uploadAvatar(@UploadedFile() file: File, @Req() req: UserRequest) {
     return this.userService.updateUserAvatar(req.user.userId, file.filename);
+  }
+
+  @Post(':userId/ban')
+  banUser(@Req() req: UserRequest, @Param('userId') userIdToBan: number) {
+    return this.userService.banUser(req.user.userId, userIdToBan);
+  }
+
+  @Delete(':userId/ban')
+  unbanUser(@Req() req: UserRequest, @Param('userId') userIdToUnban: number) {
+    return this.userService.unbanUser(req.user.userId, userIdToUnban);
+  }
+
+  @Get('banned-users')
+  getBannedUsers(@Req() req: UserRequest) {
+    return this.userService.getBannedUsers(req.user.userId);
   }
 }
