@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
 import {ValidationPipe} from "@nestjs/common";
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
       .addBearerAuth()
@@ -15,6 +17,9 @@ async function bootstrap() {
     swaggerOptions: {
       persistAuthorization: true,
     },
+  });
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads/',
   });
   await app.listen(3000);
 }
