@@ -6,12 +6,12 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { EmailVerificationSession } from '../auth/email-verification-session.entity';
-import { PasswordResetSession } from '../auth/password-reset-session.entity';
+import { EmailVerificationSession } from '../../auth/entities/email-verification-session.entity';
+import { PasswordResetSession } from '../../auth/entities/password-reset-session.entity';
 import { Interest } from './interest.entity';
 import { BannedUser } from './banned-user.entity';
-import { Post } from '../post/post.entity';
-import { PostPhoto } from '../post/post-photo.entity';
+import { Post } from '../../post/entities/post.entity';
+import { PostPhoto } from '../../post/entities/post-photo.entity';
 
 @Entity()
 export class User {

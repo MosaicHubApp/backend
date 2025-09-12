@@ -5,11 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Like, Not, Repository } from 'typeorm';
-import { Post } from './post.entity';
-import { Tag } from './tag.entity';
-import { TagCategory } from './tag-category.entity';
-import { PostPhoto } from './post-photo.entity';
-import { Notification } from './notification.entity';
+import { Post } from './entities/post.entity';
+import { Tag } from './entities/tag.entity';
+import { TagCategory } from './entities/tag-category.entity';
+import { PostPhoto } from './entities/post-photo.entity';
 import { TagsResponseDto } from './dto/tags-response.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostMapper } from './post.mapper';
@@ -29,8 +28,6 @@ export class PostService {
     private tagCategoryRepository: Repository<TagCategory>,
     @InjectRepository(PostPhoto)
     private postPhotoRepository: Repository<PostPhoto>,
-    @InjectRepository(Notification)
-    private notificationRepository: Repository<Notification>,
     private postMapper: PostMapper,
   ) {}
 

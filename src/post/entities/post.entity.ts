@@ -8,9 +8,9 @@ import {
     OneToMany,
     ManyToMany, JoinTable
 } from 'typeorm';
-import {User} from "../user/user.entity";
+import {User} from "../../user/entities/user.entity";
 import {PostPhoto} from "./post-photo.entity";
-import {Notification} from "./notification.entity";
+import {Notification} from "../../notification/entities/notification.entity";
 import {Tag} from "./tag.entity";
 
 @Entity()

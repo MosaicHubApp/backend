@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Post } from './post.entity';
+import { Post } from './entities/post.entity';
 import { UserMapper } from '../user/user.mapper';
 import { PostDto } from './dto/post.dto';
 import { IdNameDto } from '../common/dto/id-name.dto';
-import { Tag } from './tag.entity';
-import { TagCategory } from './tag-category.entity';
+import { Tag } from './entities/tag.entity';
+import { TagCategory } from './entities/tag-category.entity';
 import { TagCategoryDto } from './dto/tag-category.dto';
-import { PostPhoto } from './post-photo.entity';
+import { PostPhoto } from './entities/post-photo.entity';
 import { PostPhotoWithUrlDto } from './dto/post-photo-with-url.dto';
 
 @Injectable()

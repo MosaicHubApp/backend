@@ -8,9 +8,9 @@ import { ConfigService } from '@nestjs/config';
 import {JWT_EXPIRATION_TIME} from "./auth.constants";
 import {EmailModule} from "../email/email.module";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {EmailVerificationSession} from "./email-verification-session.entity";
+import {EmailVerificationSession} from "./entities/email-verification-session.entity";
 import {JwtStrategy} from "./strategies/jwt.strategy";
-import {PasswordResetSession} from "./password-reset-session.entity";
+import {PasswordResetSession} from "./entities/password-reset-session.entity";
 
 @Module({
   imports: [

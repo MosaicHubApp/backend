@@ -26,11 +26,11 @@ import {
 } from "./auth.constants";
 import {InjectRepository} from "@nestjs/typeorm";
 import {MoreThanOrEqual, Repository} from "typeorm";
-import {EmailVerificationSession} from "./email-verification-session.entity";
-import {User} from "../user/user.entity";
+import {EmailVerificationSession} from "./entities/email-verification-session.entity";
+import {User} from "../user/entities/user.entity";
 import {LoginDto} from "./dto/login.dto";
 import {ConfigService} from "@nestjs/config";
-import {PasswordResetSession} from "./password-reset-session.entity";
+import {PasswordResetSession} from "./entities/password-reset-session.entity";
 
 @Injectable()
 export class AuthService {

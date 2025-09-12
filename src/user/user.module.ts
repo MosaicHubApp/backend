@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserService } from './user.service';
-import { User } from './user.entity';
-import { Interest } from './interest.entity';
-import { InterestCategory } from './interest-category.entity';
-import { InterestSubcategory } from './interest-subcategory.entity';
+import { User } from './entities/user.entity';
+import { Interest } from './entities/interest.entity';
+import { InterestCategory } from './entities/interest-category.entity';
+import { InterestSubcategory } from './entities/interest-subcategory.entity';
 import { UserController } from './user.controller';
-import { BannedUser } from './banned-user.entity';
+import { BannedUser } from './entities/banned-user.entity';
 import { UserMapper } from './user.mapper';
 
 @Module({

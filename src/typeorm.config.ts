@@ -13,7 +13,7 @@ const ormConfig: TypeOrmModuleOptions & DataSourceOptions = {
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
     entities: ['dist/**/*.entity.js'], // TODO check path
-    migrations: ['dist/src/migrations/*.js'],
+    migrations: ['dist/migrations/*.js'],
     synchronize: false,
 };
 

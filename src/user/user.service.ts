@@ -1,17 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import * as swot from 'swot-node';
 import { InterestsResponseDto } from './dto/interests-response.dto';
-import { Interest } from './interest.entity';
-import { InterestCategory } from './interest-category.entity';
-import { InterestSubcategory } from './interest-subcategory.entity';
+import { Interest } from './entities/interest.entity';
+import { InterestCategory } from './entities/interest-category.entity';
+import { InterestSubcategory } from './entities/interest-subcategory.entity';
 import { IdNameDto } from '../common/dto/id-name.dto';
 import { MIN_INTERESTS_COUNT } from './user.constants';
 import { UserProfileDto } from './dto/user-profile.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
-import { BannedUser } from './banned-user.entity';
+import { BannedUser } from './entities/banned-user.entity';
 import { UserMapper } from './user.mapper';
 
 @Injectable()

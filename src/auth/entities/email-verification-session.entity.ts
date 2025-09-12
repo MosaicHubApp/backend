@@ -1,20 +1,20 @@
 import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne} from 'typeorm';
-import {User} from "../user/user.entity";
+import {User} from "../../user/entities/user.entity";
 
 @Entity()
-export class PasswordResetSession {
+export class EmailVerificationSession {
     @PrimaryGeneratedColumn()
-    password_reset_session_id: number;
+    verification_session_id: number;
 
     @ManyToOne(() => User, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    @Column({ unique: true, length: 64 })
-    password_reset_token: string;
+    @Column({ length: 6 })
+    verification_code: string;
 
-    @Column({ default: false })
-    is_used: boolean;
+    @Column()
+    is_verified: boolean;
 
     @CreateDateColumn()
     created_at: Date;
