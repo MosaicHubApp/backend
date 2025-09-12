@@ -20,5 +20,5 @@ export class Tag {
     tag_name: string;
 
     @ManyToOne(() => TagCategory, tagCategory => tagCategory.tags, { onDelete: 'CASCADE' })
-    tagCategory: TagCategory;
+    tag_category: TagCategory;
 }

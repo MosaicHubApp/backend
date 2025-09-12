@@ -1,0 +1,1 @@
+export const POST_PHOTOS_DIRECTORY = 'post-photos';

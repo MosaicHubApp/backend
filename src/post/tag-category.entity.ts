@@ -11,7 +11,7 @@ export class TagCategory {
     @PrimaryGeneratedColumn()
     tag_category_id: number;
 
-    @OneToMany(() => Tag, tag => tag.tagCategory)
+    @OneToMany(() => Tag, tag => tag.tag_category)
     tags: Tag[];
 
     @Column({ length: 200 })

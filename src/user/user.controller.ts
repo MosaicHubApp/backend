@@ -8,26 +8,27 @@ import {
   UseGuards,
   UseInterceptors,
   Post,
-  Param, Delete,
+  Param,
+  Delete,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { UserInterestsDto } from './dto/user-interests.dto';
-import type { UserRequest } from '../interfaces/user.request';
+import type { UserRequest } from '../common/interfaces/user.request';
 import { UserUpdateDto } from './dto/user-update.dto';
 // @ts-ignore
 import type { File } from 'multer';
+import { getFullUrl } from '../common/utils/request.util';
+import { createImageFileInterceptor } from '../common/utils/image.util';
+import { AVATARS_DIRECTORY } from './user.constants';
+import { withFileCleanup } from '../common/utils/file.util';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class UserController {
-  constructor(private userService: UserService) {
-  }
+  constructor(private userService: UserService) {}
 
   @Get('all-interests')
   getAllInterests() {
@@ -36,7 +37,10 @@ export class UserController {
 
   @Put('interests')
   updateUserInterests(@Req() req: UserRequest, @Body() dto: UserInterestsDto) {
-    return this.userService.updateUserInterests(req.user.userId, dto.interestIds);
+    return this.userService.updateUserInterests(
+      req.user.userId,
+      dto.interestIds,
+    );
   }
 
   @Get('profile')
@@ -50,24 +54,7 @@ export class UserController {
   }
 
   @Post('avatar')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads/avatars',
-        filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          callback(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
-      limits: { fileSize: 5 * 1024 * 1024 },
-      fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-          return callback(new Error('Only image files are allowed!'), false);
-        }
-        callback(null, true);
-      },
-    }),
-  )
+  @UseInterceptors(createImageFileInterceptor(AVATARS_DIRECTORY))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -77,8 +64,10 @@ export class UserController {
       },
     },
   })
-  uploadAvatar(@UploadedFile() file: File, @Req() req: UserRequest) {
-    return this.userService.updateUserAvatar(req.user.userId, file.filename);
+  async updateUserAvatar(@Req() req: UserRequest, @UploadedFile() file: File) {
+    return withFileCleanup(file, () =>
+      this.userService.updateUserAvatar(req.user.userId, getFullUrl(req), file.path),
+    );
   }
 
   @Post(':userId/ban')

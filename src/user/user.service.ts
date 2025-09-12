@@ -7,11 +7,12 @@ import { InterestsResponseDto } from './dto/interests-response.dto';
 import { Interest } from './interest.entity';
 import { InterestCategory } from './interest-category.entity';
 import { InterestSubcategory } from './interest-subcategory.entity';
-import { IdNameDto } from './dto/id-name.dto';
+import { IdNameDto } from '../common/dto/id-name.dto';
 import { MIN_INTERESTS_COUNT } from './user.constants';
 import { UserProfileDto } from './dto/user-profile.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { BannedUser } from './banned-user.entity';
+import { UserMapper } from './user.mapper';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,7 @@ export class UserService {
     private interestSubcategoryRepository: Repository<InterestSubcategory>,
     @InjectRepository(BannedUser)
     private bannedUserRepository: Repository<BannedUser>,
+    private userMapper: UserMapper,
   ) {}
 
   findByEmail(email: string) {
@@ -105,24 +107,7 @@ export class UserService {
     if (!user) {
       throw new BadRequestException();
     }
-    return this.mapUserToProfileDto(user);
-  }
-
-  private mapUserToProfileDto(user: User): UserProfileDto {
-    return {
-      id: user.user_id,
-      name: user.name,
-      interests: user.interests ? user.interests.map(
-        (i) => new IdNameDto(i.interest_id, i.name),
-      ) : undefined,
-      description: user.description,
-      photoUrl: user.photo_url,
-      isVerifiedStudent: user.is_verified_student,
-      telegramUsername: user.telegram_username,
-      instagramUsername: user.instagram_username,
-      linkedinUsername: user.linkedin_username,
-      githubUsername: user.github_username,
-    };
+    return this.userMapper.userToDto(user);
   }
 
   async updateProfile(userId: number, dto: UserUpdateDto) {
@@ -139,16 +124,18 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async updateUserAvatar(userId: number, filename: string) {
+  async updateUserAvatar(userId: number, serverUrl: string, path?: string) {
     const user = await this.findById(userId);
     if (!user) {
       throw new BadRequestException('User not found');
     }
-
-    user.photo_url = `/uploads/avatars/${filename}`;
+    user.photo_url = path ? `${serverUrl}/${path}` : null;
+    console.log("This is user photo url" + user.photo_url)
     await this.userRepository.save(user);
 
-    return { message: 'Avatar updated successfully', photoUrl: user.photo_url };
+    return {
+      photoUrl: user.photo_url
+    };
   }
 
   async banUser(userId: number, userIdToBan: number) {
@@ -200,6 +187,6 @@ export class UserService {
     });
     return bannedUsers
       .map((bannedUser) => bannedUser.banned_user)
-      .map(this.mapUserToProfileDto);
+      .map(this.userMapper.userToDto);
   }
 }

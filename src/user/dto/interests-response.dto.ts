@@ -1,5 +1,5 @@
 
-import { IdNameDto } from './id-name.dto';
+import { IdNameDto } from '../../common/dto/id-name.dto';
 
 export class InterestsResponseDto {
   interests: IdNameDto[];

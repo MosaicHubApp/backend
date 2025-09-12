@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { join } from 'path';
 import {ValidationPipe} from "@nestjs/common";
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { UPLOADS_DIRECTORY } from './common/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -18,8 +19,8 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   });
-  app.useStaticAssets(join(process.cwd(), 'uploads'), {
-    prefix: '/uploads/',
+  app.useStaticAssets(join(process.cwd(), UPLOADS_DIRECTORY), {
+    prefix: `/${UPLOADS_DIRECTORY}/`,
   });
   await app.listen(3000);
 }
