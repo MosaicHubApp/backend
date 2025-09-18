@@ -1,10 +1,11 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Like, Not, Repository } from 'typeorm';
+import { In, LessThan, Like, Not, Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { Tag } from './entities/tag.entity';
 import { TagCategory } from './entities/tag-category.entity';
@@ -15,7 +16,7 @@ import { PostMapper } from './post.mapper';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostPhotosReorderRequestDto } from './dto/post-photos-reorder-request.dto';
 import { deleteFile } from '../common/utils/file.util';
-import { POST_PHOTOS_DIRECTORY } from './post.constants';
+import { POST_AUTO_CLOSE_DAYS, POST_PHOTOS_DIRECTORY } from './post.constants';
 
 @Injectable()
 export class PostService {
@@ -212,5 +213,45 @@ export class PostService {
       throw new NotFoundException('Post not found');
     }
     return this.postMapper.postToDto(post);
+  }
+
+  async changePostClosedStatus(userId: number, postId: number, isClosed: boolean) {
+    const post = await this.postRepository.findOne({
+      where: { post_id: postId, author: { user_id: userId } },
+      relations: ['author', 'post_photos', 'tags'],
+    });
+    if (!post) {
+      throw new NotFoundException('Post not found or not owned by user');
+    }
+    if (post.is_closed === isClosed) {
+      throw new ConflictException(`Post is already ${isClosed ? 'closed' : 'opened'}`);
+    }
+    if(!isClosed) {
+      post.opened_at = new Date();
+    }
+    post.is_closed = isClosed;
+    await this.postRepository.save(post);
+    return this.postMapper.postToDto(post);
+  }
+
+  async findExpiredPosts() {
+    const expiredDate = new Date();
+    expiredDate.setDate(expiredDate.getDate() - POST_AUTO_CLOSE_DAYS);
+    return this.postRepository.find({
+      where: {
+        is_closed: false,
+        opened_at: LessThan(expiredDate),
+      },
+      relations: ['author'],
+    });
+  }
+
+  async closePosts(postIds: number[]) {
+    await this.postRepository
+      .createQueryBuilder()
+      .update()
+      .set({ is_closed: true })
+      .whereInIds(postIds)
+      .execute();
   }
 }

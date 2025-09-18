@@ -109,4 +109,14 @@ export class PostController {
   getPostById(@Param('postId') postId: number) {
     return this.postService.getPostById(postId);
   }
+
+  @Put(':postId/close')
+  closePost(@Req() req: UserRequest, @Param('postId') postId: number) {
+    return this.postService.changePostClosedStatus(req.user.userId, postId, true);
+  }
+
+  @Put(':postId/open')
+  openPost(@Req() req: UserRequest, @Param('postId') postId: number) {
+    return this.postService.changePostClosedStatus(req.user.userId, postId, false);
+  }
 }

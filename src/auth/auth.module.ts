@@ -26,6 +26,7 @@ import {PasswordResetSession} from "./entities/password-reset-session.entity";
       }),
     }),
   ],
+  exports: [JwtModule],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
